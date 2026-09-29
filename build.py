@@ -116,7 +116,7 @@ def main():
     compare_dir.mkdir(exist_ok=True)
     compare_body = '<h1>Compare verified ticket offers</h1><p>Comparison includes only offers with an explicit discount in the official source.</p>' + ("".join(deal_cards) if offers else '<p class="muted">No comparable verified offers are available right now.</p>')
     (compare_dir / "index.html").write_text(layout(f"Compare ticket discounts | {brand}", "Compare verified attraction and theme park ticket discounts.", canonical(base, "compare/"), compare_body, item_list([e for e in entries if e["path"].startswith("deals/")], base)), encoding="utf-8")
-    urls = [canonical(base)] + [canonical(base, e["path"]) for e in entries]
+    urls = [canonical(base), canonical(base, "providers/"), canonical(base, "compare/")] + [canonical(base, e["path"]) for e in entries]
     stamp = (data.get("fetched_at") or date.today().isoformat())[:10]
     (out / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{esc(url)}</loc><lastmod>{stamp}</lastmod></url>\n" for url in urls) + "</urlset>\n", encoding="utf-8")
     (out / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {canonical(base, 'sitemap.xml')}\n", encoding="utf-8")
