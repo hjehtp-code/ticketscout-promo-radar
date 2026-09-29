@@ -1,0 +1,139 @@
+# ::ILANG [TYPE:file][PROJECT:TicketScout]
+# ::STATE{@ROLE, responsibility:Render static pages and indexes from configuration and verified offer data}
+# ::RULE{Read .ilang/site.ilang and data/offers.json; never fabricate commercial facts}
+# ::BOUNDARY{never:render an unverified price or discount|scope:permanent}
+"""Build a static, data-driven attraction discount directory."""
+from __future__ import annotations
+
+import html
+import json
+import re
+from datetime import date
+from pathlib import Path
+from urllib.parse import quote
+
+ROOT = Path(__file__).resolve().parent
+
+
+def load_config():
+    text = (ROOT / ".ilang" / "site.ilang").read_text(encoding="utf-8")
+    match = re.search(r"::STATE\{@SITE,(.*?)\}", text, re.S)
+    if not match:
+        raise ValueError("Missing @SITE state")
+    site = dict(re.findall(r"([\w_]+):\s*([^,]+)", match.group(1)))
+    providers = []
+    section = re.search(r"::MODULE\{PROVIDERS[^\n]*\}\s*(.*?)(?=\n::MODULE|\Z)", text, re.S)
+    for line in (section.group(1) if section else "").splitlines():
+        parts = [part.strip() for part in line.split("|")]
+        if len(parts) >= 3 and parts[0]:
+            providers.append({"name": parts[0], "url": parts[1], "source": parts[2], "affiliate": parts[3] if len(parts) > 3 else ""})
+    return site, providers
+
+
+def esc(value):
+    return html.escape(str(value), quote=True)
+
+
+def canonical(base, path=""):
+    return base.rstrip("/") + "/" + path.lstrip("/")
+
+
+def layout(title, description, canonical_url, body, jsonld=None):
+    schema = f'<script type="application/ld+json">{json.dumps(jsonld, ensure_ascii=False)}</script>' if jsonld else ""
+    return f'''<!doctype html>
+<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{esc(title)}</title><meta name="description" content="{esc(description)}"><link rel="canonical" href="{esc(canonical_url)}">
+<meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{esc(canonical_url)}"><meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/styles.css">{schema}</head><body><header><a class="brand" href="/">TicketScout</a><nav><a href="/providers/">Providers</a><a href="/compare/">Compare</a></nav></header><main>{body}</main><footer><p>Offers are included only when a current discount is evidenced by the official source. Prices and availability can change; confirm details with the provider.</p><p>Updated from configured public sources. <a href="/sitemap.xml">Sitemap</a></p></footer></body></html>'''
+
+
+def item_list(entries, base):
+    return {"@context": "https://schema.org", "@type": "ItemList", "itemListElement": [
+        {"@type": "ListItem", "position": i, "url": canonical(base, entry["path"])} for i, entry in enumerate(entries, 1)
+    ]}
+
+
+def main():
+    site, providers = load_config()
+    brand = site.get("brand", "TicketScout")
+    base = site.get("base_url", "https://ticket-scout.pages.dev")
+    data_file = ROOT / "data" / "offers.json"
+    data = json.loads(data_file.read_text(encoding="utf-8")) if data_file.exists() else {"fetched_at": "", "offers": []}
+    offers = data.get("offers", [])
+    out = ROOT / "site"
+    out.mkdir(exist_ok=True)
+    # Remove stale generated pages while keeping the source tree untouched.
+    for path in out.rglob("*"):
+        if path.is_file():
+            path.unlink()
+    entries = []
+    provider_cards = []
+    for provider in providers:
+        matches = [o for o in offers if o.get("provider_id") == provider["name"].lower()]
+        slug = re.sub(r"[^a-z0-9]+", "-", provider["name"].lower()).strip("-")
+        path = f"providers/{slug}/"
+        provider_dir = out / path
+        provider_dir.mkdir(parents=True, exist_ok=True)
+        cards = "".join(offer_card(o, f"/deals/{deal_slug(o)}/") for o in matches)
+        status = f"{len(matches)} verified offer{'s' if len(matches) != 1 else ''} currently listed." if matches else "No verified discount offers are available from this provider right now."
+        body = f'<p class="eyebrow">Provider</p><h1>{esc(provider["name"])}</h1><p>{esc(status)}</p><p><a class="button" href="{esc(provider["url"])}" rel="nofollow">Visit official website</a></p><p class="source">Public source: <a href="{esc(provider["source"])}">{esc(provider["source"])}</a></p>{cards or ""}'
+        schema = {"@context": "https://schema.org", "@type": "Service", "name": provider["name"], "url": canonical(base, path), "provider": {"@type": "Organization", "name": provider["name"], "url": provider["url"]}}
+        priced = [o for o in matches if "price" in o and o.get("currency")]
+        if priced:
+            vals = [float(o["price"]) for o in priced]
+            schema["offers"] = {"@type": "AggregateOffer", "lowPrice": min(vals), "highPrice": max(vals), "priceCurrency": priced[0]["currency"], "offerCount": len(priced)}
+        (provider_dir / "index.html").write_text(layout(f"{provider['name']} ticket discounts | {date.today():%B %Y} | {brand}", status, canonical(base, path), body, schema), encoding="utf-8")
+        provider_cards.append(f'<article class="card"><h2><a href="/{path}">{esc(provider["name"])}</a></h2><p>{esc(status)}</p></article>')
+        entries.append({"path": path, "title": provider["name"]})
+    deal_cards = []
+    for offer in offers:
+        slug = deal_slug(offer)
+        path = f"deals/{slug}/"
+        deal_dir = out / path
+        deal_dir.mkdir(parents=True, exist_ok=True)
+        price_line = f'<p class="price">{esc(offer["currency"])} {esc(offer["price"])}</p>' if "price" in offer and offer.get("currency") else ""
+        desc = f"{offer.get('provider', 'Provider')} lists a verified {offer.get('discount_percent')}% discount for {offer.get('product_name')} at the official source."
+        body = f'<p class="eyebrow">Verified ticket discount</p><h1>{esc(offer.get("title", "Verified discount"))}</h1><p>{esc(desc)}</p><p class="discount">{esc(offer.get("discount_percent"))}% off</p>{price_line}<p>Source checked: {esc(offer.get("fetched_at", ""))}</p><p><a class="button" href="{esc(offer.get("offer_url", offer.get("source_url", "")))}" rel="nofollow">Check offer at official source</a></p><p class="source">Source: <a href="{esc(offer.get("source_url", ""))}">{esc(offer.get("provider", "official provider"))}</a></p>'
+        schema = {"@context": "https://schema.org", "@type": "Offer", "url": offer.get("offer_url") or canonical(base, path), "availability": "https://schema.org/InStock"}
+        if "price" in offer and offer.get("currency"):
+            schema.update({"price": offer["price"], "priceCurrency": offer["currency"]})
+        if offer.get("valid_until"):
+            schema["priceValidUntil"] = offer["valid_until"]
+        (deal_dir / "index.html").write_text(layout(f"{offer.get('provider')} {offer.get('discount_percent')}% off | {date.today():%B %Y}", desc, canonical(base, path), body, schema), encoding="utf-8")
+        deal_cards.append(offer_card(offer, f"/{path}"))
+        entries.append({"path": path, "title": offer.get("title", "Verified offer")})
+    state_line = f'<p class="meta">Last source check: {esc(data.get("fetched_at") or "No completed fetch yet")}</p>'
+    hero = f'<section class="hero"><p class="eyebrow">Attraction & theme park ticket discounts</p><h1>Find verified ticket offers</h1><p>Official-source discounts for museums, attractions and theme parks. We list a deal only when the source provides evidence of a discount.</p>{state_line}</section>'
+    empty = '<section class="empty"><h2>No verified discounts at the moment</h2><p>We could not confirm a current discount from the configured official provider. Visit the provider for standard ticket options and availability.</p></section>' if not offers else ""
+    home_body = hero + empty + '<section><h2>Current offers</h2>' + ("".join(deal_cards) if deal_cards else '<p class="muted">No deals meet our verification rules yet.</p>') + '</section><section><h2>Providers</h2>' + "".join(provider_cards) + '</section>'
+    (out / "index.html").write_text(layout(f"Verified attraction ticket discounts | {date.today():%B %Y} | {brand}", "Find current attraction and theme park ticket discounts verified against official sources.", canonical(base), home_body, item_list(entries, base)), encoding="utf-8")
+    provider_index = '<h1>Official ticket providers</h1>' + "".join(provider_cards)
+    (out / "providers").mkdir(exist_ok=True)
+    (out / "providers" / "index.html").write_text(layout(f"Providers | {brand}", "Official sources monitored for verified attraction discounts.", canonical(base, "providers/"), provider_index, item_list([e for e in entries if e["path"].startswith("providers/")], base)), encoding="utf-8")
+    compare_dir = out / "compare"
+    compare_dir.mkdir(exist_ok=True)
+    compare_body = '<h1>Compare verified ticket offers</h1><p>Comparison includes only offers with an explicit discount in the official source.</p>' + ("".join(deal_cards) if offers else '<p class="muted">No comparable verified offers are available right now.</p>')
+    (compare_dir / "index.html").write_text(layout(f"Compare ticket discounts | {brand}", "Compare verified attraction and theme park ticket discounts.", canonical(base, "compare/"), compare_body, item_list([e for e in entries if e["path"].startswith("deals/")], base)), encoding="utf-8")
+    urls = [canonical(base)] + [canonical(base, e["path"]) for e in entries]
+    stamp = (data.get("fetched_at") or date.today().isoformat())[:10]
+    (out / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{esc(url)}</loc><lastmod>{stamp}</lastmod></url>\n" for url in urls) + "</urlset>\n", encoding="utf-8")
+    (out / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {canonical(base, 'sitemap.xml')}\n", encoding="utf-8")
+    (out / "styles.css").write_text(CSS, encoding="utf-8")
+    print(f"Built {len(urls)} pages at {out}")
+
+
+def deal_slug(offer):
+    source = f"{offer.get('provider_id', '')}-{offer.get('product_name', '')}"
+    return re.sub(r"[^a-z0-9]+", "-", source.lower()).strip("-") or "verified-offer"
+
+
+def offer_card(offer, url):
+    price = f' · {esc(offer["currency"])} {esc(offer["price"])}' if "price" in offer and offer.get("currency") else ""
+    return f'<article class="card"><p class="discount">{esc(offer.get("discount_percent"))}% off</p><h2><a href="{esc(url)}">{esc(offer.get("title", "Verified discount"))}</a></h2><p>{esc(offer.get("provider", ""))}{price}</p><p class="source">Verified from the <a href="{esc(offer.get("source_url", ""))}">official source</a>.</p></article>'
+
+
+CSS = """*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#152238;font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}header,footer,main{max-width:1080px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;align-items:center}.brand{font-weight:800;font-size:1.3rem;color:#14233c;text-decoration:none}nav{display:flex;gap:20px}a{color:#1459b5}.hero{background:#142b4a;color:white;border-radius:22px;padding:48px;margin:14px 0 32px}.hero a{color:white}.hero h1{max-width:760px;font-size:clamp(2.2rem,6vw,4rem);line-height:1.08;margin:.2em 0}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.78rem;font-weight:700;color:#83c4ff}.hero .eyebrow{color:#9bd4ff}.meta,.muted{color:#66758a}.hero .meta{color:#c5d5e8}.card,.empty{background:white;border:1px solid #e1e7ef;border-radius:16px;padding:22px;margin:14px 0;box-shadow:0 4px 18px #182d4b0a}.card h2{margin:.1em 0}.discount{color:#a13217;font-size:1.2rem;font-weight:800}.price{font-size:1.7rem;font-weight:750}.button{display:inline-block;background:#155bb4;color:white;padding:11px 17px;border-radius:9px;text-decoration:none;font-weight:700}.source{font-size:.9rem;color:#64748b}footer{margin-top:40px;border-top:1px solid #dce3ec;color:#536175;font-size:.9rem}section{margin:30px 0}nav a{text-decoration:none}h1{line-height:1.15}article a{text-decoration:none}article a:hover{text-decoration:underline}@media(min-width:760px){main>section:not(.hero){display:block}.card{padding:24px}}"""
+
+
+if __name__ == "__main__":
+    main()

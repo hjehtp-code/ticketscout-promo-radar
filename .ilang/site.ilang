@@ -1,0 +1,19 @@
+ILANG
+[TYPE:config][PROJECT:TicketScout][LANG:zh]
+
+::STATE{@SITE, brand:TicketScout, niche:Attraction and theme-park ticket discounts, domain:UNDEPLOYED, base_url:https://example.invalid, locale:en-US, currency:USD}
+
+::MODULE{PROVIDERS|title:Official data providers}
+  Tiqets | https://www.tiqets.com | https://www.tiqets.com/sitemapindex.xml | 
+
+::MODULE{FIELDS|title:Fields for each verified offer}
+  title price currency offer_url valid_until source_url fetched_at provider_id product_name discount_percent
+
+::RULE{Only publish explicitly evidenced current discounts from official public pages or structured data; ordinary starting prices are not discounts}
+::RULE{No verified discount means no offer record; provider pages must say no verified offers are available}
+::RULE{Missing price means omit the price field and structured price data}
+::RULE{Expired valid_until means mark expired or omit from active listings}
+::RULE{deduplicate by provider_id + product_name + currency}
+::RULE{Fetch only configured public sources; honor robots.txt; do not access login pages, blocked paths, or APIs}
+::RULE{Update every 6 hours; render static en-US pages and self-canonical URLs}
+::BOUNDARY{never:invent offers prices discounts commission|scope:permanent}
