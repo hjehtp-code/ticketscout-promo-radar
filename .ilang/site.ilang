@@ -3,13 +3,12 @@ ILANG
 
 ::STATE{@SITE, brand:TicketScout, niche:Attraction and theme-park ticket discounts, domain:ticketscout-promo-radar.pages.dev, base_url:https://ticketscout-promo-radar.pages.dev, locale:en-US, currency:USD}
 
-::MODULE{PROVIDERS|title:Official data providers}
+::MODULE{PROVIDERS|title:Single-brand official attraction providers}
   Paultons Park | https://paultonspark.co.uk | https://paultonspark.co.uk/tickets/two-for-one/ |
   Efteling | https://www.efteling.com/en | https://www.efteling.com/en/park/verjaardag |
-  Klook | https://www.klook.com/en-SG | https://www.klook.com/en-SG/deals/ |
-  Trip.com | https://www.trip.com | https://www.trip.com/hot/trip.com-promo-code/ |
-  Headout | https://www.headout.com | https://www.headout.com/hampton-court-palace-tickets-c-1623/ |
-
+  Diggerland | https://www.diggerland.com | https://www.diggerland.com/the-sun-voucher-terms/ |
+  Fårup Sommerland | https://www.faarupsommerland.dk/en | https://www.faarupsommerland.dk/en/tickets-and-prices/ |
+  M&D's Scotland's Theme Park | https://scotlandsthemepark.com | https://scotlandsthemepark.com/offer/fun-point-cards/ |
 ::MODULE{FIELDS|title:Fields for each verified offer}
   title price currency offer_url valid_until source_url fetched_at provider_id product_name discount_percent
 
