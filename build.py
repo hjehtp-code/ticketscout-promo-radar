@@ -94,7 +94,9 @@ def main():
         price_line = f'<p class="price">{esc(offer["currency"])} {esc(offer["price"])}</p>' if "price" in offer and offer.get("currency") else ""
         desc = f"{offer.get('provider', 'Provider')} lists a verified {offer.get('discount_percent')}% discount for {offer.get('product_name')} at the official source."
         body = f'<p class="eyebrow">Verified ticket discount</p><h1>{esc(offer.get("title", "Verified discount"))}</h1><p>{esc(desc)}</p><p class="discount">{esc(offer.get("discount_percent"))}% off</p>{price_line}<p>Source checked: {esc(offer.get("fetched_at", ""))}</p><p><a class="button" href="{esc(offer.get("offer_url", offer.get("source_url", "")))}" rel="nofollow">Check offer at official source</a></p><p class="source">Source: <a href="{esc(offer.get("source_url", ""))}">{esc(offer.get("provider", "official provider"))}</a></p>'
-        schema = {"@context": "https://schema.org", "@type": "Offer", "url": offer.get("offer_url") or canonical(base, path), "availability": "https://schema.org/InStock"}
+        schema = {"@context": "https://schema.org", "@type": "Offer", "url": offer.get("offer_url") or canonical(base, path)}
+        if offer.get("availability"):
+            schema["availability"] = offer["availability"]
         if "price" in offer and offer.get("currency"):
             schema.update({"price": offer["price"], "priceCurrency": offer["currency"]})
         if offer.get("valid_until"):

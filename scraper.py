@@ -145,6 +145,9 @@ def parse_offers(html, page_url, provider_id, provider_name, fetched_at):
                 "offer_url": item.get("url") or page_url, "source_url": page_url,
                 "discount_percent": discount_num, "fetched_at": fetched_at,
             }
+            availability = item.get("availability")
+            if availability:
+                record["availability"] = availability if isinstance(availability, str) else str(availability)
             if price is not None and currency:
                 try:
                     record["price"] = float(price)
