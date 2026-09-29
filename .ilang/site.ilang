@@ -4,7 +4,13 @@ ILANG
 ::STATE{@SITE, brand:TicketScout, niche:Attraction and theme-park ticket discounts, domain:ticketscout-promo-radar.pages.dev, base_url:https://ticketscout-promo-radar.pages.dev, locale:en-US, currency:USD}
 
 ::MODULE{PROVIDERS|title:Official data providers}
-  Tiqets | https://www.tiqets.com | https://www.tiqets.com/sitemapindex.xml | 
+  Paultons Park | https://paultonspark.co.uk | https://paultonspark.co.uk/tickets/two-for-one/ |
+  Europa-Park | https://www.europapark.de/en | https://www.europapark.de/en/theme-park/tickets-offers |
+  Efteling | https://www.efteling.com/en | https://www.efteling.com/en/park/verjaardag |
+  Phantasialand | https://www.phantasialand.de/en | https://www.phantasialand.de/en/theme-park/tickets-offers/ |
+  Liseberg | https://www.liseberg.se/en | https://www.liseberg.se/en/park/tickets-prices/ |
+  Tivoli Gardens | https://www.tivoli.dk/en | https://www.tivoli.dk/en/tivoli-pass |
+  Ocean Park Hong Kong | https://www.oceanpark.com.hk/en | https://www.oceanpark.com.hk/en/ticket-offer |
 
 ::MODULE{FIELDS|title:Fields for each verified offer}
   title price currency offer_url valid_until source_url fetched_at provider_id product_name discount_percent
