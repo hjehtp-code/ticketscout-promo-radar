@@ -1,7 +1,7 @@
 ILANG
 [TYPE:config][PROJECT:TicketScout][LANG:zh]
 
-::STATE{@SITE, brand:TicketScout, niche:Attraction and theme-park ticket discounts, domain:UNDEPLOYED, base_url:https://example.invalid, locale:en-US, currency:USD}
+::STATE{@SITE, brand:TicketScout, niche:Attraction and theme-park ticket discounts, domain:ticketscout-promo-radar.pages.dev, base_url:https://ticketscout-promo-radar.pages.dev, locale:en-US, currency:USD}
 
 ::MODULE{PROVIDERS|title:Official data providers}
   Tiqets | https://www.tiqets.com | https://www.tiqets.com/sitemapindex.xml | 
