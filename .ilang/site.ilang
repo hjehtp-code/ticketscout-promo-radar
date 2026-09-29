@@ -5,12 +5,10 @@ ILANG
 
 ::MODULE{PROVIDERS|title:Official data providers}
   Paultons Park | https://paultonspark.co.uk | https://paultonspark.co.uk/tickets/two-for-one/ |
-  Europa-Park | https://www.europapark.de/en | https://www.europapark.de/en/theme-park/tickets-offers |
   Efteling | https://www.efteling.com/en | https://www.efteling.com/en/park/verjaardag |
-  Phantasialand | https://www.phantasialand.de/en | https://www.phantasialand.de/en/theme-park/tickets-offers/ |
-  Liseberg | https://www.liseberg.se/en | https://www.liseberg.se/en/park/tickets-prices/ |
-  Tivoli Gardens | https://www.tivoli.dk/en | https://www.tivoli.dk/en/tivoli-pass |
-  Ocean Park Hong Kong | https://www.oceanpark.com.hk/en | https://www.oceanpark.com.hk/en/ticket-offer |
+  Klook | https://www.klook.com/en-SG | https://www.klook.com/en-SG/deals/ |
+  Trip.com | https://www.trip.com | https://www.trip.com/hot/trip.com-promo-code/ |
+  Headout | https://www.headout.com | https://www.headout.com/hampton-court-palace-tickets-c-1623/ |
 
 ::MODULE{FIELDS|title:Fields for each verified offer}
   title price currency offer_url valid_until source_url fetched_at provider_id product_name discount_percent
