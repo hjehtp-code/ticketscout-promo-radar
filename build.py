@@ -44,7 +44,40 @@ def layout(title, description, canonical_url, body, jsonld=None):
 <html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title><meta name="description" content="{esc(description)}"><link rel="canonical" href="{esc(canonical_url)}">
 <meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{esc(canonical_url)}"><meta name="twitter:card" content="summary">
-<link rel="stylesheet" href="/styles.css">{schema}</head><body><header><a class="brand" href="/">TicketScout</a><nav><a href="/providers/">Providers</a><a href="/compare/">Compare</a></nav></header><main>{body}</main><footer><p>Offers are included only when a current discount is evidenced by the official source. Prices and availability can change; confirm details with the provider.</p><p>Updated from configured public sources. <a href="/sitemap.xml">Sitemap</a></p></footer></body></html>'''
+<link rel="stylesheet" href="/styles.css">{schema}</head><body><header><a class="brand" href="/">TicketScout</a><nav><a href="/providers/">Providers</a><a href="/compare/">Compare</a></nav></header><main>{body}</main><footer><p>Offers are included only when a current discount is evidenced by the official source. Prices and availability can change; confirm details with the provider.</p><p>Links on this site may be affiliate links. We may earn a commission at no extra cost to you.</p><nav class="footer-links" aria-label="Footer"><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/contact/">Contact</a><a href="/sitemap.xml">Sitemap</a></nav></footer></body></html>'''
+
+
+def static_pages(out, base, site):
+    contact_email = site.get("contact_email", "").strip()
+    contact = (f'<a href="mailto:{esc(contact_email)}">{esc(contact_email)}</a>' if contact_email
+               else "A dedicated site contact email has not been configured yet.")
+    pages = {
+        "about": (
+            "About TicketScout",
+            "How TicketScout selects and presents attraction and theme park ticket offers.",
+            '<h1>About TicketScout</h1><p>TicketScout is a directory of attraction and theme park ticket offers checked against public official sources.</p><p>An offer is listed only when the official source provides evidence of a current discount and a ticket price. Each offer links to the source so visitors can confirm its terms, dates, availability and final price with the provider.</p><p>TicketScout does not sell tickets or process ticket payments. Offer details can change; the provider’s current terms apply.</p>',
+        ),
+        "privacy": (
+            "Privacy | TicketScout",
+            "Privacy information for visitors to the static TicketScout website.",
+            f'<h1>Privacy</h1><p>Last updated: {date.today():%B %d, %Y}</p><p>TicketScout is a static information site. It does not provide visitor accounts, ticket checkout, newsletter subscriptions, or a contact form. The site source currently contains no custom analytics or advertising scripts.</p><p>When you request a page, the hosting and network services that deliver and protect this site may process technical request information, such as an IP address, requested URL, browser details and request time. See the <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare Privacy Policy</a> for information about Cloudflare’s processing.</p><p>Offer links take you to attraction providers’ websites. Those sites have their own privacy practices, which apply when you visit them. TicketScout does not control those sites.</p><p>For a privacy question about TicketScout, contact: {contact}</p>',
+        ),
+        "contact": (
+            "Contact | TicketScout",
+            "Contact TicketScout about site content or privacy questions.",
+            f'<h1>Contact TicketScout</h1><p>For a question about a ticket offer, check its official source linked on the offer page; the attraction provider can confirm current terms, availability and checkout price.</p><p>For a correction to TicketScout or a privacy question, email: {contact}</p>',
+        ),
+    }
+    entries = []
+    for slug, (title, description, body) in pages.items():
+        path = f"{slug}/"
+        directory = out / path
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / "index.html").write_text(layout(title, description, canonical(base, path), body), encoding="utf-8")
+        entries.append({"path": path, "title": title})
+    not_found = '<h1>Page not found</h1><p>We could not find that page. Check the address or return to the <a href="/">TicketScout home page</a>.</p>'
+    (out / "404.html").write_text(layout("Page not found | TicketScout", "The requested TicketScout page could not be found.", canonical(base, "404.html"), not_found), encoding="utf-8")
+    return entries
 
 
 def item_list(entries, base):
@@ -110,6 +143,7 @@ def main():
         (deal_dir / "index.html").write_text(layout(f"{deal_title} | {date.today():%B %Y}", desc, canonical(base, path), body, schema), encoding="utf-8")
         deal_cards.append(offer_card(offer, f"/{path}"))
         entries.append({"path": path, "title": offer.get("title", "Verified offer")})
+    entries.extend(static_pages(out, base, site))
     state_line = f'<p class="meta">Last source check: {esc(data.get("fetched_at") or "No completed fetch yet")}</p>'
     hero = f'<section class="hero"><p class="eyebrow">Attraction & theme park ticket discounts</p><h1>Find verified ticket offers</h1><p>Official-source discounts for museums, attractions and theme parks. We list a deal only when the source provides evidence of a discount.</p>{state_line}</section>'
     empty = '<section class="empty"><h2>No verified discounts at the moment</h2><p>We could not confirm a current discount from the configured official provider. Visit the provider for standard ticket options and availability.</p></section>' if not offers else ""
@@ -141,7 +175,7 @@ def offer_card(offer, url):
     return f'<article class="card"><p class="discount">{discount}</p><h2><a href="{esc(url)}">{esc(offer.get("title", "Verified discount"))}</a></h2><p>{esc(offer.get("provider", ""))}{price}</p><p class="source">Verified from the <a href="{esc(offer.get("source_url", ""))}">official source</a>.</p></article>'
 
 
-CSS = """*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#152238;font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}header,footer,main{max-width:1080px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;align-items:center}.brand{font-weight:800;font-size:1.3rem;color:#14233c;text-decoration:none}nav{display:flex;gap:20px}a{color:#1459b5}.hero{background:#142b4a;color:white;border-radius:22px;padding:48px;margin:14px 0 32px}.hero a{color:white}.hero h1{max-width:760px;font-size:clamp(2.2rem,6vw,4rem);line-height:1.08;margin:.2em 0}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.78rem;font-weight:700;color:#83c4ff}.hero .eyebrow{color:#9bd4ff}.meta,.muted{color:#66758a}.hero .meta{color:#c5d5e8}.card,.empty{background:white;border:1px solid #e1e7ef;border-radius:16px;padding:22px;margin:14px 0;box-shadow:0 4px 18px #182d4b0a}.card h2{margin:.1em 0}.discount{color:#a13217;font-size:1.2rem;font-weight:800}.price{font-size:1.7rem;font-weight:750}.button{display:inline-block;background:#155bb4;color:white;padding:11px 17px;border-radius:9px;text-decoration:none;font-weight:700}.source{font-size:.9rem;color:#64748b}footer{margin-top:40px;border-top:1px solid #dce3ec;color:#536175;font-size:.9rem}section{margin:30px 0}nav a{text-decoration:none}h1{line-height:1.15}article a{text-decoration:none}article a:hover{text-decoration:underline}@media(min-width:760px){main>section:not(.hero){display:block}.card{padding:24px}}"""
+CSS = """*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#152238;font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}header,footer,main{max-width:1080px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;align-items:center}.brand{font-weight:800;font-size:1.3rem;color:#14233c;text-decoration:none}nav{display:flex;gap:20px}a{color:#1459b5}.hero{background:#142b4a;color:white;border-radius:22px;padding:48px;margin:14px 0 32px}.hero a{color:white}.hero h1{max-width:760px;font-size:clamp(2.2rem,6vw,4rem);line-height:1.08;margin:.2em 0}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.78rem;font-weight:700;color:#83c4ff}.hero .eyebrow{color:#9bd4ff}.meta,.muted{color:#66758a}.hero .meta{color:#c5d5e8}.card,.empty{background:white;border:1px solid #e1e7ef;border-radius:16px;padding:22px;margin:14px 0;box-shadow:0 4px 18px #182d4b0a}.card h2{margin:.1em 0}.discount{color:#a13217;font-size:1.2rem;font-weight:800}.price{font-size:1.7rem;font-weight:750}.button{display:inline-block;background:#155bb4;color:white;padding:11px 17px;border-radius:9px;text-decoration:none;font-weight:700}.source{font-size:.9rem;color:#64748b}footer{margin-top:40px;border-top:1px solid #dce3ec;color:#536175;font-size:.9rem}.footer-links{display:flex;gap:18px;flex-wrap:wrap}section{margin:30px 0}nav a{text-decoration:none}h1{line-height:1.15}article a{text-decoration:none}article a:hover{text-decoration:underline}@media(min-width:760px){main>section:not(.hero){display:block}.card{padding:24px}}"""
 
 
 if __name__ == "__main__":
