@@ -106,7 +106,8 @@ def main():
             schema.update({"price": offer["price"], "priceCurrency": offer["currency"]})
         if offer.get("valid_until"):
             schema["priceValidUntil"] = offer["valid_until"]
-        (deal_dir / "index.html").write_text(layout(f"{offer.get('provider')} {offer.get('discount_percent')}% off | {date.today():%B %Y}", desc, canonical(base, path), body, schema), encoding="utf-8")
+        deal_title = f"{offer['provider']} {offer['discount_percent']}% off" if offer.get("discount_percent") is not None else f"{offer['provider']} online advance ticket offer"
+        (deal_dir / "index.html").write_text(layout(f"{deal_title} | {date.today():%B %Y}", desc, canonical(base, path), body, schema), encoding="utf-8")
         deal_cards.append(offer_card(offer, f"/{path}"))
         entries.append({"path": path, "title": offer.get("title", "Verified offer")})
     state_line = f'<p class="meta">Last source check: {esc(data.get("fetched_at") or "No completed fetch yet")}</p>'
