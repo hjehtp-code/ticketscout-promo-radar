@@ -9,6 +9,9 @@ ILANG
   Diggerland | https://www.diggerland.com | https://www.diggerland.com/the-sun-voucher-terms/ |
   Fårup Sommerland | https://www.faarupsommerland.dk/en | https://www.faarupsommerland.dk/en/tickets-and-prices/ |
   Gulliver's | https://www.gulliverslandresort.co.uk | https://www.gulliverslandresort.co.uk/plan-your-visit/opening-times-prices/ |
+  Phantasialand | https://www.phantasialand.de/en | https://www.phantasialand.de/en/theme-park/tickets-offers/ |
+  Taronga Zoo Sydney | https://www.taronga.org.au/sydney-zoo | https://www.taronga.org.au/sydney-zoo/plan/visitor-information/ticket-prices |
+  Hoo Zoo and Dinosaur World | https://www.hoo-zoo.com | https://www.hoo-zoo.com/tickets-passes/admission-prices/ |
 ::MODULE{FIELDS|title:Fields for each verified offer}
   title price currency offer_url valid_until source_url fetched_at provider_id product_name discount_percent
 

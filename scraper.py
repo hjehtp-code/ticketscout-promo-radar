@@ -260,6 +260,173 @@ def gullivers_price_rows(html, page_url, provider_id, provider_name, fetched_at)
     return records
 
 
+def phantasialand_wintertraum_offer(text, page_url, provider_id, provider_name, fetched_at):
+    """Read the explicitly priced Wintertraum advance offer from its official page."""
+    match = re.search(
+        r"Only until\s+(\d{1,2})\s+([A-Za-z]+):\s*Wintertraum Deal from just\s*€\s*(\d+(?:[.,]\d{1,2})?)",
+        text,
+        re.I,
+    )
+    evidence = re.search(
+        r"specially priced\s+presale tickets for Phantasialand Wintertraum from just\s*€\s*(\d+(?:[.,]\d{1,2})?)",
+        text,
+        re.I,
+    )
+    if not match or not evidence:
+        return []
+    try:
+        year = datetime.fromisoformat(fetched_at).year
+        valid_until = datetime.strptime(f"{match.group(1)} {match.group(2)} {year}", "%d %B %Y").date().isoformat()
+        price = float(match.group(3).replace(",", "."))
+        evidence_price = float(evidence.group(1).replace(",", "."))
+    except ValueError:
+        return []
+    if price != evidence_price:
+        return []
+    return [{
+        "provider_id": provider_id, "provider": provider_name,
+        "product_name": "Wintertraum presale ticket", "title": "Phantasialand Wintertraum presale ticket",
+        "offer_url": page_url, "source_url": page_url,
+        "price": price, "currency": "EUR", "fetched_at": fetched_at,
+        "valid_until": valid_until,
+        "discount_evidence": "Official page labels the ticket a specially priced presale offer and lists its current from-price.",
+        "discount_label": "Specially priced presale",
+    }]
+
+
+def taronga_online_ticket_rows(html, page_url, provider_id, provider_name, fetched_at):
+    """Extract only rows from Taronga's official gate-price/online-price tables."""
+    class TableParser(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.in_table = False
+            self.in_row = False
+            self.in_cell = False
+            self.cell = []
+            self.row = []
+            self.rows = []
+            self.tables = []
+
+        def handle_starttag(self, tag, attrs):
+            tag = tag.lower()
+            if tag == "table":
+                self.in_table = True
+                self.rows = []
+            elif self.in_table and tag == "tr":
+                self.in_row, self.row = True, []
+            elif self.in_row and tag in {"td", "th"}:
+                self.in_cell, self.cell = True, []
+
+        def handle_data(self, data):
+            if self.in_cell:
+                self.cell.append(data.strip())
+
+        def handle_endtag(self, tag):
+            tag = tag.lower()
+            if tag in {"td", "th"} and self.in_cell:
+                self.row.append(re.sub(r"\s+", " ", " ".join(self.cell)).strip())
+                self.in_cell = False
+            elif tag == "tr" and self.in_row:
+                self.rows.append(self.row)
+                self.in_row = False
+            elif tag == "table" and self.in_table:
+                self.tables.append(self.rows)
+                self.in_table = False
+
+    parser = TableParser()
+    parser.feed(html)
+    records = []
+    for rows in parser.tables:
+        header = next((r for r in rows if len(r) >= 3 and "ticket type" in r[0].casefold() and "gate price" in r[1].casefold() and "online price" in r[2].casefold()), None)
+        if not header:
+            continue
+        for row in rows:
+            if len(row) < 3 or row is header:
+                continue
+            gate = re.search(r"\$\s*(\d+(?:\.\d{1,2})?)", row[1])
+            online = re.search(r"\$\s*(\d+(?:\.\d{1,2})?)", row[2])
+            if not gate or not online:
+                continue
+            price, gate_price = float(online.group(1)), float(gate.group(1))
+            if price <= 0 or price >= gate_price:
+                continue
+            name = row[0].strip()
+            records.append({
+                "provider_id": provider_id, "provider": provider_name,
+                "product_name": f"{name} day ticket — online price", "title": f"Taronga Zoo Sydney: {name} day ticket, online price",
+                "offer_url": page_url, "source_url": page_url,
+                "price": price, "currency": "AUD", "fetched_at": fetched_at,
+                "discount_evidence": f"Official page lists online price AUD {price:.2f} below gate price AUD {gate_price:.2f}.",
+                "discount_label": "Discounted online ticket",
+            })
+    return records
+
+
+def hoo_zoo_ticket_rows(html, page_url, provider_id, provider_name, fetched_at):
+    """Extract Hoo Zoo's named online ticket cards and their lower online prices."""
+    class CardParser(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.card = None
+            self.card_depth = 0
+            self.captures = []
+            self.records = []
+
+        def handle_starttag(self, tag, attrs):
+            tag = tag.lower()
+            classes = dict(attrs).get("class", "").split()
+            if tag == "div" and "ticket-card" in classes:
+                self.card, self.card_depth = {}, 1
+                self.captures = []
+                return
+            if self.card is None:
+                return
+            if tag == "div":
+                self.card_depth += 1
+            field = "name" if tag == "h4" else next((key for cls, key in (("price", "online"), ("gate-price", "gate")) if cls in classes), None)
+            if field:
+                self.captures.append({"tag": tag, "field": field, "parts": []})
+
+        def handle_data(self, data):
+            for capture in self.captures:
+                capture["parts"].append(data)
+
+        def handle_endtag(self, tag):
+            tag = tag.lower()
+            if self.card is None:
+                return
+            if self.captures and self.captures[-1]["tag"] == tag:
+                capture = self.captures.pop()
+                self.card[capture["field"]] = re.sub(r"\s+", " ", " ".join(capture["parts"])).strip()
+            if tag == "div":
+                self.card_depth -= 1
+                if self.card_depth == 0:
+                    self.records.append(self.card)
+                    self.card = None
+
+    parser = CardParser()
+    parser.feed(html)
+    records = []
+    for card in parser.records:
+        name = card.get("name", "")
+        online = re.search(r"£\s*(\d+(?:\.\d{1,2})?)", card.get("online", ""))
+        gate = re.search(r"£\s*(\d+(?:\.\d{1,2})?)", card.get("gate", ""))
+        if not name or not online or not gate:
+            continue
+        price, gate_price = float(online.group(1)), float(gate.group(1))
+        if price <= 0 or price >= gate_price:
+            continue
+        records.append({
+            "provider_id": provider_id, "provider": provider_name,
+            "product_name": f"{name} ticket — online price", "title": f"Hoo Zoo: {name} ticket, online price",
+            "offer_url": page_url, "source_url": page_url,
+            "price": price, "currency": "GBP", "fetched_at": fetched_at,
+            "discount_evidence": f"Official page labels advance booking a reduced price and lists online price GBP {price:.2f} below gate price GBP {gate_price:.2f}.",
+            "discount_label": "Reduced online ticket price",
+        })
+    return records
+
+
 def flatten(value):
     if isinstance(value, list):
         for item in value:
@@ -348,6 +515,12 @@ def main():
                 parsed.extend(explicit_discount_records(visible_text(page_html), final_url, provider_id, provider["name"], fetched_at))
                 if provider_id == "gulliver's":
                     parsed.extend(gullivers_price_rows(page_html, final_url, provider_id, provider["name"], fetched_at))
+                elif provider_id == "phantasialand":
+                    parsed.extend(phantasialand_wintertraum_offer(visible_text(page_html), final_url, provider_id, provider["name"], fetched_at))
+                elif provider_id == "taronga zoo sydney":
+                    parsed.extend(taronga_online_ticket_rows(page_html, final_url, provider_id, provider["name"], fetched_at))
+                elif provider_id == "hoo zoo and dinosaur world":
+                    parsed.extend(hoo_zoo_ticket_rows(page_html, final_url, provider_id, provider["name"], fetched_at))
                 records.extend(parsed)
                 time.sleep(0.25)
             except (urllib.error.URLError, TimeoutError, ValueError) as exc:
