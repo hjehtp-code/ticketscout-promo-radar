@@ -1,7 +1,7 @@
 ILANG
 [TYPE:config][PROJECT:TicketScout][LANG:zh]
 
-::STATE{@SITE, brand:TicketScout, niche:Attraction and theme-park ticket discounts, domain:attractionticketradar.com, base_url:https://attractionticketradar.com, locale:en-US, currency:USD, contact_email:ticketradar@163.com}
+::STATE{@SITE, brand:TicketScout, niche:Attraction and theme-park ticket discounts, domain:attractionticketradar.com, base_url:https://attractionticketradar.com, locale:en-US, currency:USD, contact_email:contact@attractionticketradar.com}
 
 ::MODULE{PROVIDERS|title:Single-brand official attraction providers}
   Paultons Park | https://paultonspark.co.uk | https://paultonspark.co.uk/tickets/two-for-one/ |
