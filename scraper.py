@@ -254,6 +254,7 @@ def gullivers_price_rows(html, page_url, provider_id, provider_name, fetched_at)
             "offer_url": page_url, "source_url": page_url,
             "price": price, "currency": "GBP", "fetched_at": fetched_at,
             "discount_evidence": "Official page labels Online Advance prices and states an approximate online discount when booked in advance.",
+            "discount_label": "Online advance discount",
         }
         records.append(record)
     return records

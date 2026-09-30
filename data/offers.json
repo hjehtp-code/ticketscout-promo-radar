@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-30T03:30:12+00:00",
+  "fetched_at": "2026-09-30T03:31:56+00:00",
   "offers": [
     {
       "provider_id": "gulliver's",
@@ -10,8 +10,9 @@
       "source_url": "https://www.gulliverslandresort.co.uk/plan-your-visit/opening-times-prices/",
       "price": 26.0,
       "currency": "GBP",
-      "fetched_at": "2026-09-30T03:30:12+00:00",
-      "discount_evidence": "Official page labels Online Advance prices and states an approximate online discount when booked in advance."
+      "fetched_at": "2026-09-30T03:31:56+00:00",
+      "discount_evidence": "Official page labels Online Advance prices and states an approximate online discount when booked in advance.",
+      "discount_label": "Online advance discount"
     },
     {
       "provider_id": "gulliver's",
@@ -22,8 +23,9 @@
       "source_url": "https://www.gulliverslandresort.co.uk/plan-your-visit/opening-times-prices/",
       "price": 24.0,
       "currency": "GBP",
-      "fetched_at": "2026-09-30T03:30:12+00:00",
-      "discount_evidence": "Official page labels Online Advance prices and states an approximate online discount when booked in advance."
+      "fetched_at": "2026-09-30T03:31:56+00:00",
+      "discount_evidence": "Official page labels Online Advance prices and states an approximate online discount when booked in advance.",
+      "discount_label": "Online advance discount"
     },
     {
       "provider_id": "gulliver's",
@@ -34,8 +36,9 @@
       "source_url": "https://www.gulliverslandresort.co.uk/plan-your-visit/opening-times-prices/",
       "price": 19.0,
       "currency": "GBP",
-      "fetched_at": "2026-09-30T03:30:12+00:00",
-      "discount_evidence": "Official page labels Online Advance prices and states an approximate online discount when booked in advance."
+      "fetched_at": "2026-09-30T03:31:56+00:00",
+      "discount_evidence": "Official page labels Online Advance prices and states an approximate online discount when booked in advance.",
+      "discount_label": "Online advance discount"
     },
     {
       "provider_id": "gulliver's",
@@ -46,8 +49,9 @@
       "source_url": "https://www.gulliverslandresort.co.uk/plan-your-visit/opening-times-prices/",
       "price": 24.0,
       "currency": "GBP",
-      "fetched_at": "2026-09-30T03:30:12+00:00",
-      "discount_evidence": "Official page labels Online Advance prices and states an approximate online discount when booked in advance."
+      "fetched_at": "2026-09-30T03:31:56+00:00",
+      "discount_evidence": "Official page labels Online Advance prices and states an approximate online discount when booked in advance.",
+      "discount_label": "Online advance discount"
     }
   ]
 }

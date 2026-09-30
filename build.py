@@ -92,8 +92,13 @@ def main():
         deal_dir = out / path
         deal_dir.mkdir(parents=True, exist_ok=True)
         price_line = f'<p class="price">{esc(offer["currency"])} {esc(offer["price"])}</p>' if "price" in offer and offer.get("currency") else ""
-        desc = f"{offer.get('provider', 'Provider')} lists a verified {offer.get('discount_percent')}% discount for {offer.get('product_name')} at the official source."
-        body = f'<p class="eyebrow">Verified ticket discount</p><h1>{esc(offer.get("title", "Verified discount"))}</h1><p>{esc(desc)}</p><p class="discount">{esc(offer.get("discount_percent"))}% off</p>{price_line}<p>Source checked: {esc(offer.get("fetched_at", ""))}</p><p><a class="button" href="{esc(offer.get("offer_url", offer.get("source_url", "")))}" rel="nofollow">Check offer at official source</a></p><p class="source">Source: <a href="{esc(offer.get("source_url", ""))}">{esc(offer.get("provider", "official provider"))}</a></p>'
+        if offer.get("discount_percent") is not None:
+            desc = f"{offer.get('provider', 'Provider')} lists a verified {offer['discount_percent']}% discount for {offer.get('product_name')} at the official source."
+            discount_line = f'<p class="discount">{esc(offer["discount_percent"])}% off</p>'
+        else:
+            desc = f"{offer.get('provider', 'Provider')} lists an official online advance ticket price for {offer.get('product_name')}. The source describes an online advance discount without stating an exact percentage."
+            discount_line = f'<p class="discount">{esc(offer.get("discount_label", "Official discount"))}</p>'
+        body = f'<p class="eyebrow">Verified ticket discount</p><h1>{esc(offer.get("title", "Verified discount"))}</h1><p>{esc(desc)}</p>{discount_line}{price_line}<p>Source checked: {esc(offer.get("fetched_at", ""))}</p><p><a class="button" href="{esc(offer.get("offer_url", offer.get("source_url", "")))}" rel="nofollow">Check offer at official source</a></p><p class="source">Source: <a href="{esc(offer.get("source_url", ""))}">{esc(offer.get("provider", "official provider"))}</a></p>'
         schema = {"@context": "https://schema.org", "@type": "Offer", "url": offer.get("offer_url") or canonical(base, path)}
         if offer.get("availability"):
             schema["availability"] = offer["availability"]
@@ -131,7 +136,8 @@ def deal_slug(offer):
 
 def offer_card(offer, url):
     price = f' · {esc(offer["currency"])} {esc(offer["price"])}' if "price" in offer and offer.get("currency") else ""
-    return f'<article class="card"><p class="discount">{esc(offer.get("discount_percent"))}% off</p><h2><a href="{esc(url)}">{esc(offer.get("title", "Verified discount"))}</a></h2><p>{esc(offer.get("provider", ""))}{price}</p><p class="source">Verified from the <a href="{esc(offer.get("source_url", ""))}">official source</a>.</p></article>'
+    discount = f'{esc(offer["discount_percent"])}% off' if offer.get("discount_percent") is not None else esc(offer.get("discount_label", "Official discount"))
+    return f'<article class="card"><p class="discount">{discount}</p><h2><a href="{esc(url)}">{esc(offer.get("title", "Verified discount"))}</a></h2><p>{esc(offer.get("provider", ""))}{price}</p><p class="source">Verified from the <a href="{esc(offer.get("source_url", ""))}">official source</a>.</p></article>'
 
 
 CSS = """*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#152238;font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}header,footer,main{max-width:1080px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;align-items:center}.brand{font-weight:800;font-size:1.3rem;color:#14233c;text-decoration:none}nav{display:flex;gap:20px}a{color:#1459b5}.hero{background:#142b4a;color:white;border-radius:22px;padding:48px;margin:14px 0 32px}.hero a{color:white}.hero h1{max-width:760px;font-size:clamp(2.2rem,6vw,4rem);line-height:1.08;margin:.2em 0}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.78rem;font-weight:700;color:#83c4ff}.hero .eyebrow{color:#9bd4ff}.meta,.muted{color:#66758a}.hero .meta{color:#c5d5e8}.card,.empty{background:white;border:1px solid #e1e7ef;border-radius:16px;padding:22px;margin:14px 0;box-shadow:0 4px 18px #182d4b0a}.card h2{margin:.1em 0}.discount{color:#a13217;font-size:1.2rem;font-weight:800}.price{font-size:1.7rem;font-weight:750}.button{display:inline-block;background:#155bb4;color:white;padding:11px 17px;border-radius:9px;text-decoration:none;font-weight:700}.source{font-size:.9rem;color:#64748b}footer{margin-top:40px;border-top:1px solid #dce3ec;color:#536175;font-size:.9rem}section{margin:30px 0}nav a{text-decoration:none}h1{line-height:1.15}article a{text-decoration:none}article a:hover{text-decoration:underline}@media(min-width:760px){main>section:not(.hero){display:block}.card{padding:24px}}"""
