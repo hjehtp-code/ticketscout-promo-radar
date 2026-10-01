@@ -12,6 +12,13 @@
     "live_sitemap_note": "Public sitemap read with curl.exe over verified HTTPS on 2026-10-01; 34 URLs, exact match with generated site/sitemap.xml, new guide included. Receipt research/live-sitemap.xml.",
     "audit": "research/LL-01-audit.md",
     "diagrams": 3,
-    "video_status": "59.9-second narrated video created; upload awaits Edge extension local-file permission"
+    "video_status": "published public; YouTube copyright checks completed with no issues",
+    "video_url": "https://www.youtube.com/watch?v=SLs7UqaUstc",
+    "video_id": "SLs7UqaUstc",
+    "video_published_on": "2026-10-01",
+    "video_ai_disclosed": true,
+    "video_audience": "not made for kids; adult ticket-planning information",
+    "video_public_verified": true,
+    "video_public_proof": "research/proofs/youtube-public-list.png"
   }
 ]
