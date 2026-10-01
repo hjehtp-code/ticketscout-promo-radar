@@ -66,8 +66,10 @@ def layout(title, description, canonical_url, body, jsonld=None):
     gtag('config', '{measurement_id}', {{'allow_google_signals': false, 'allow_ad_personalization_signals': false}});
   }}
 </script>''' if measurement_id else ''
+    verification_id = site.get('impact_site_verification', '').strip()
+    verification = f'<meta name="impact-site-verification" value="{esc(verification_id)}">' if verification_id else ''
     return f'''<!doctype html>
-<html lang="en-US"><head>{analytics}<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en-US"><head>{analytics}{verification}<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title><meta name="description" content="{esc(description)}"><link rel="canonical" href="{esc(canonical_url)}">
 <meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{esc(canonical_url)}"><meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="/styles.css?v={style_version}">{schema}</head><body><header><a class="brand" href="/">{brand}</a><nav aria-label="Main navigation"><a href="/guides/">Guides</a><a href="/providers/">Providers</a><a href="/compare/">Compare</a></nav></header><main>{body}</main><footer><p>{brand} — attraction and theme-park ticket offers.</p><p>Offers are included only when a current discount is evidenced by the official source. Prices and availability can change; confirm details with the provider.</p>{disclosure}<nav class="footer-links" aria-label="Footer"><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/contact/">Contact</a><a href="/sitemap.xml">Sitemap</a></nav></footer></body></html>'''
