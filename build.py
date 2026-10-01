@@ -42,6 +42,8 @@ def canonical(base, path=""):
 def layout(title, description, canonical_url, body, jsonld=None):
     site, providers = load_config()
     brand = esc(site.get('brand', 'TicketScout'))
+    if site.get('brand', 'TicketScout') not in title:
+        title = f"{title} | {site.get('brand', 'TicketScout')}"
     style_version = hashlib.sha256(CSS.encode('utf-8')).hexdigest()[:12]
     disclosure = '<p>Some provider links are affiliate links. We may earn a commission from purchases through those links.</p>' if any(p.get('affiliate') for p in providers) else ''
     schema = f'<script type="application/ld+json">{json.dumps(jsonld, ensure_ascii=False)}</script>' if jsonld else ""
@@ -49,18 +51,20 @@ def layout(title, description, canonical_url, body, jsonld=None):
 <html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title><meta name="description" content="{esc(description)}"><link rel="canonical" href="{esc(canonical_url)}">
 <meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{esc(canonical_url)}"><meta name="twitter:card" content="summary">
-<link rel="stylesheet" href="/styles.css?v={style_version}">{schema}</head><body><header><a class="brand" href="/">{brand}</a><nav aria-label="Main navigation"><a href="/providers/">Providers</a><a href="/compare/">Compare</a></nav></header><main>{body}</main><footer><p>Offers are included only when a current discount is evidenced by the official source. Prices and availability can change; confirm details with the provider.</p>{disclosure}<nav class="footer-links" aria-label="Footer"><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/contact/">Contact</a><a href="/sitemap.xml">Sitemap</a></nav></footer></body></html>'''
+<link rel="stylesheet" href="/styles.css?v={style_version}">{schema}</head><body><header><a class="brand" href="/">{brand}</a><nav aria-label="Main navigation"><a href="/providers/">Providers</a><a href="/compare/">Compare</a></nav></header><main>{body}</main><footer><p>{brand} — attraction and theme-park ticket offers.</p><p>Offers are included only when a current discount is evidenced by the official source. Prices and availability can change; confirm details with the provider.</p>{disclosure}<nav class="footer-links" aria-label="Footer"><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/contact/">Contact</a><a href="/sitemap.xml">Sitemap</a></nav></footer></body></html>'''
 
 
 def static_pages(out, base, site):
     contact_email = site.get("contact_email", "").strip()
+    operator = site.get("operator", "").strip()
+    operator_line = f'<p>TicketScout is created and maintained by {esc(operator)}.</p>' if operator else ''
     contact = (f'<a href="mailto:{esc(contact_email)}">{esc(contact_email)}</a>' if contact_email
                else "A dedicated site contact email has not been configured yet.")
     pages = {
         "about": (
             "About TicketScout",
             "How TicketScout selects and presents attraction and theme park ticket offers.",
-            '<h1>About TicketScout</h1><p>TicketScout is a directory of attraction and theme park ticket offers checked against public official sources.</p><p>An offer is listed only when the official source provides evidence of a current discount and a ticket price. Each offer links to the source so visitors can confirm its terms, dates, availability and final price with the provider.</p><p>TicketScout does not sell tickets or process ticket payments. Offer details can change; the provider’s current terms apply.</p>',
+            '<h1>About TicketScout</h1>' + operator_line + '<p>TicketScout is a directory of attraction and theme park ticket offers checked against public official sources.</p><p>An offer is listed only when the official source provides evidence of a current discount and a ticket price. Each offer links to the source so visitors can confirm its terms, dates, availability and final price with the provider.</p><p>TicketScout does not sell tickets or process ticket payments. Offer details can change; the provider’s current terms apply.</p>',
         ),
         "privacy": (
             "Privacy | TicketScout",
