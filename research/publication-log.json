@@ -8,8 +8,8 @@
     "source_commit": "af89fef",
     "live_page_verified": true,
     "sitemap_build_verified": true,
-    "live_sitemap_verified": false,
-    "live_sitemap_note": "Direct browser XML opening blocked by client; public web tool unavailable. Generated sitemap includes URL and was deployed in the same commit.",
+    "live_sitemap_verified": true,
+    "live_sitemap_note": "Public sitemap read with curl.exe over verified HTTPS on 2026-10-01; 34 URLs, exact match with generated site/sitemap.xml, new guide included. Receipt research/live-sitemap.xml.",
     "audit": "research/LL-01-audit.md",
     "diagrams": 3,
     "video_status": "59.9-second narrated video created; upload awaits Edge extension local-file permission"
