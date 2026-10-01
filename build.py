@@ -39,6 +39,11 @@ def canonical(base, path=""):
     return base.rstrip("/") + "/" + path.lstrip("/")
 
 
+def provider_check_diagram(provider_name):
+    label = esc(provider_name)
+    return f'<figure class="ticket-check"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 210" role="img" aria-label="{label}: check the product, visit date and final total"><rect width="720" height="210" rx="20" fill="#edf5f2"/><g font-family="Arial,sans-serif" fill="#183c39"><text x="30" y="48" font-size="25" font-weight="700">{label}: before you buy</text><rect x="30" y="78" width="205" height="75" rx="12" fill="white"/><rect x="255" y="78" width="205" height="75" rx="12" fill="white"/><rect x="480" y="78" width="210" height="75" rx="12" fill="white"/><text x="50" y="122" font-size="24">Exact product</text><text x="275" y="122" font-size="24">Valid visit date</text><text x="500" y="122" font-size="24">Final total</text><text x="30" y="188" font-size="20">Confirm these details on the linked official provider page.</text></g></svg><figcaption>A check to make before purchase; no unlisted benefit is assumed.</figcaption></figure>'
+
+
 def layout(title, description, canonical_url, body, jsonld=None):
     site, providers = load_config()
     brand = esc(site.get('brand', 'TicketScout'))
@@ -50,13 +55,16 @@ def layout(title, description, canonical_url, body, jsonld=None):
     measurement_id = site.get('ga4_measurement_id', '').strip()
     if measurement_id and not re.fullmatch(r'G-[A-Z0-9]+', measurement_id):
         raise ValueError('Invalid configured GA4 measurement ID')
+    analytics_domain = json.dumps(site.get('domain', '').strip())
     analytics = f'''<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={measurement_id}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){{dataLayer.push(arguments);}}
   gtag('js', new Date());
-  gtag('config', '{measurement_id}', {{'allow_google_signals': false, 'allow_ad_personalization_signals': false}});
+  if (window.location.hostname === {analytics_domain}) {{
+    gtag('config', '{measurement_id}', {{'allow_google_signals': false, 'allow_ad_personalization_signals': false}});
+  }}
 </script>''' if measurement_id else ''
     return f'''<!doctype html>
 <html lang="en-US"><head>{analytics}<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -130,7 +138,7 @@ def main():
         provider_dir.mkdir(parents=True, exist_ok=True)
         cards = "".join(offer_card(o, f"/deals/{deal_slug(o)}/") for o in matches)
         status = f"{len(matches)} verified offer{'s' if len(matches) != 1 else ''} currently listed." if matches else "No verified discount offers are available from this provider right now."
-        body = f'<p class="eyebrow">Provider</p><h1>{esc(provider["name"])}</h1><p>{esc(status)}</p><p><a class="button" href="{esc(provider["url"])}" rel="nofollow">Visit official website</a></p><p class="source">Public source: <a href="{esc(provider["source"])}">{esc(provider["source"])}</a></p>{cards or ""}'
+        body = f'<p class="eyebrow">Provider</p><h1>{esc(provider["name"])}</h1><p>{esc(status)}</p><p><a class="button" href="{esc(provider["url"])}" rel="nofollow">Visit official website</a></p><p class="source">Public source: <a href="{esc(provider["source"])}">{esc(provider["source"])}</a></p>{provider_check_diagram(provider["name"])}{cards or ""}'
         schema = {"@context": "https://schema.org", "@type": "Service", "name": provider["name"], "url": canonical(base, path), "provider": {"@type": "Organization", "name": provider["name"], "url": provider["url"]}}
         priced = [o for o in matches if "price" in o and o.get("currency")]
         if priced:
@@ -153,6 +161,7 @@ def main():
             desc = f"{offer.get('provider', 'Provider')} lists an official online advance ticket price for {offer.get('product_name')}. The source describes an online advance discount without stating an exact percentage."
             discount_line = f'<p class="discount">{esc(offer.get("discount_label", "Official discount"))}</p>'
         body = f'<p class="eyebrow">Verified ticket discount</p><h1>{esc(offer.get("title", "Verified discount"))}</h1><p>{esc(desc)}</p>{discount_line}{price_line}<p>Source checked: {esc(offer.get("fetched_at", ""))}</p><p><a class="button" href="{esc(offer.get("offer_url", offer.get("source_url", "")))}" rel="nofollow">Check offer at official source</a></p><p class="source">Source: <a href="{esc(offer.get("source_url", ""))}">{esc(offer.get("provider", "official provider"))}</a></p>'
+        body += provider_check_diagram(offer.get('provider', 'Provider'))
         schema = {"@context": "https://schema.org", "@type": "Offer", "url": offer.get("offer_url") or canonical(base, path)}
         if offer.get("availability"):
             schema["availability"] = offer["availability"]
@@ -204,6 +213,8 @@ CSS = """html{overflow-wrap:anywhere}img{max-width:100%;height:auto}header{flex-
 
 
 CSS += """.cards-grid,.provider-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.cards-grid .card,.provider-grid .card{margin:0}.card h2{font-size:1.3rem;line-height:1.3}.card .discount{display:inline-block;background:#e5f3ea;color:#17553a;border-radius:6px;padding:4px 9px;font-size:.86rem}.card .price{margin:.3em 0;font-size:1.75rem}.stats{font-weight:700}.secondary{background:transparent;border:1px solid #a9c4e5;margin-left:8px}.guide{max-width:780px;margin:auto}.answer{background:#eaf4ff;border-left:4px solid #1459b5;padding:18px;border-radius:8px;font-size:1.1rem}.guide h1{font-size:clamp(2rem,5vw,3rem)}.guide h2{margin-top:2em}.guide table{border-collapse:collapse;width:100%;font-size:.95rem}.guide td,.guide th{padding:12px;border:1px solid #dce3ec;text-align:left}.table-scroll{overflow-x:auto}figure{margin:24px 0}figcaption{font-size:.9rem;color:#536175}.guide img{display:block;width:100%}@media(max-width:600px){.cards-grid,.provider-grid{grid-template-columns:1fr}.hero{padding:24px}.hero h1{font-size:32px}header,footer,main{padding:16px}.secondary{margin:10px 0 0}.guide td,.guide th{padding:8px}}"""
+
+CSS += '.ticket-check svg{display:block;width:100%;max-width:780px;height:auto}'
 
 if __name__ == "__main__":
     main()

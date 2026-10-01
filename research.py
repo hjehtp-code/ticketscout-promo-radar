@@ -22,8 +22,14 @@ class Document(HTMLParser):
     def handle_data(self, text):
         if not self.skip and text.strip(): self.parts.append(text.strip())
 
+class NoAutomaticRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        # A redirect must be configured and robots-checked before its content is read.
+        return None
+
 def request(url):
-    with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent':UA}),timeout=25) as r:
+    opener = urllib.request.build_opener(NoAutomaticRedirect())
+    with opener.open(urllib.request.Request(url, headers={'User-Agent':UA}),timeout=25) as r:
         return r.geturl(), r.read().decode('utf-8','replace')
 
 robots={}

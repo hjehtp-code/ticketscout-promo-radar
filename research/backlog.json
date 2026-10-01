@@ -3,9 +3,9 @@
   "fixed_top3": ["undercovertourist.com", "myparktickets.com", "funex.com"],
   "source": "User-supplied US monthly search data; never estimated",
   "items": [
-    {"gap_id":"LL-01","target":"legoland ticket","monthly_original":"4万","question":"Which included parks and offer dates apply to this Florida ticket?","status":"drafted","evidence":"research/legoland-evidence.json + discovery.json","priority":1},
-    {"gap_id":"CW-01","target":"carowinds tickets","monthly_original":"5万","question":"Does my admission cover the seasonal event I plan to attend?","status":"needs official evidence","priority":2},
-    {"gap_id":"KB-01","target":"knott's berry farm tickets","monthly_original":"16.5万","question":"Which admission covers my daytime or Halloween visit?","status":"needs official evidence","priority":3},
+    {"gap_id":"LL-01","target":"legoland ticket","monthly_original":"4万","question":"Which included parks and offer dates apply to this Florida ticket?","status":"published","evidence":"research/legoland-evidence.json + discovery.json","priority":1},
+    {"gap_id":"CW-01","target":"carowinds tickets","monthly_original":"5万","question":"Which ticket covers park admission, haunted mazes and separate experiences?","status":"evidence ready; recheck before publication","evidence":"research/next-evidence.json + event-evidence.json + ammunition-2026-10-01.md","priority":2},
+    {"gap_id":"KB-01","target":"knott's berry farm tickets","monthly_original":"16.5万","question":"Which admission covers my daytime or Halloween visit, and which add-ons exclude admission?","status":"evidence ready; recheck before publication","evidence":"research/next-evidence.json + event-evidence.json","priority":3},
     {"gap_id":"SF-01","target":"six flags tickets","monthly_original":"9.1万","question":"Which park and visit-day restrictions apply to my ticket?","status":"needs official evidence","priority":4},
     {"gap_id":"DD-01","target":"disneyland tickets discount","monthly_original":"1.2万","question":"Which official offer can my party actually use?","status":"official access blocked","priority":5},
     {"gap_id":"CD-01","target":"cheap disneyland tickets","monthly_original":"9900","question":"How do I compare the same party, date and ticket inclusions?","status":"needs official evidence; do not duplicate DD-01","priority":6},

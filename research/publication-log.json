@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "date": "2026-10-01",
+    "gap_id": "LL-01",
+    "target_keyword": "legoland ticket",
+    "title": "LEGOLAND Ticket: Check Inclusions and Expired Offers Before You Buy",
+    "url": "https://attractionticketradar.com/guides/legoland-ticket-inclusions-and-expired-offers/",
+    "source_commit": "af89fef",
+    "live_page_verified": true,
+    "sitemap_build_verified": true,
+    "live_sitemap_verified": false,
+    "live_sitemap_note": "Direct browser XML opening blocked by client; public web tool unavailable. Generated sitemap includes URL and was deployed in the same commit.",
+    "audit": "research/LL-01-audit.md",
+    "diagrams": 3,
+    "video_status": "59.9-second narrated video created; upload awaits Edge extension local-file permission"
+  }
+]

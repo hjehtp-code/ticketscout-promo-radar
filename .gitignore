@@ -1,2 +1,10 @@
 __pycache__/
 *.py[cod]
+research/metrics*.json
+research/proofs/
+research/discovery.json
+research/funex-discovery.json
+research/*-pages.json
+research/*-evidence.json
+research/ga4-setup-receipt.json
+media/
