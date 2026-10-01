@@ -47,11 +47,22 @@ def layout(title, description, canonical_url, body, jsonld=None):
     style_version = hashlib.sha256(CSS.encode('utf-8')).hexdigest()[:12]
     disclosure = '<p>Some provider links are affiliate links. We may earn a commission from purchases through those links.</p>' if any(p.get('affiliate') for p in providers) else ''
     schema = f'<script type="application/ld+json">{json.dumps(jsonld, ensure_ascii=False)}</script>' if jsonld else ""
+    measurement_id = site.get('ga4_measurement_id', '').strip()
+    if measurement_id and not re.fullmatch(r'G-[A-Z0-9]+', measurement_id):
+        raise ValueError('Invalid configured GA4 measurement ID')
+    analytics = f'''<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={measurement_id}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){{dataLayer.push(arguments);}}
+  gtag('js', new Date());
+  gtag('config', '{measurement_id}', {{'allow_google_signals': false, 'allow_ad_personalization_signals': false}});
+</script>''' if measurement_id else ''
     return f'''<!doctype html>
-<html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en-US"><head>{analytics}<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title><meta name="description" content="{esc(description)}"><link rel="canonical" href="{esc(canonical_url)}">
 <meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{esc(canonical_url)}"><meta name="twitter:card" content="summary">
-<link rel="stylesheet" href="/styles.css?v={style_version}">{schema}</head><body><header><a class="brand" href="/">{brand}</a><nav aria-label="Main navigation"><a href="/providers/">Providers</a><a href="/compare/">Compare</a></nav></header><main>{body}</main><footer><p>{brand} — attraction and theme-park ticket offers.</p><p>Offers are included only when a current discount is evidenced by the official source. Prices and availability can change; confirm details with the provider.</p>{disclosure}<nav class="footer-links" aria-label="Footer"><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/contact/">Contact</a><a href="/sitemap.xml">Sitemap</a></nav></footer></body></html>'''
+<link rel="stylesheet" href="/styles.css?v={style_version}">{schema}</head><body><header><a class="brand" href="/">{brand}</a><nav aria-label="Main navigation"><a href="/guides/">Guides</a><a href="/providers/">Providers</a><a href="/compare/">Compare</a></nav></header><main>{body}</main><footer><p>{brand} — attraction and theme-park ticket offers.</p><p>Offers are included only when a current discount is evidenced by the official source. Prices and availability can change; confirm details with the provider.</p>{disclosure}<nav class="footer-links" aria-label="Footer"><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/contact/">Contact</a><a href="/sitemap.xml">Sitemap</a></nav></footer></body></html>'''
 
 
 def static_pages(out, base, site):
@@ -60,6 +71,7 @@ def static_pages(out, base, site):
     operator_line = f'<p>TicketScout is created and maintained by {esc(operator)}.</p>' if operator else ''
     contact = (f'<a href="mailto:{esc(contact_email)}">{esc(contact_email)}</a>' if contact_email
                else "A dedicated site contact email has not been configured yet.")
+    analytics_privacy = '<h2>Google Analytics 4</h2><p>TicketScout uses Google Analytics 4 to measure visits, page views and website interactions. Google Analytics uses cookies and processes information such as page URLs, browser and device details and approximate location. Advertising personalization and Google signals are disabled in our site tag. We do not send names, email addresses or ticket payment information to Google Analytics.</p><p>Read <a href="https://policies.google.com/technologies/partner-sites">how Google uses information from sites that use its services</a> and the <a href="https://policies.google.com/privacy">Google Privacy Policy</a>. You can use the <a href="https://tools.google.com/dlpage/gaoptout">Google Analytics opt-out browser add-on</a> or browser privacy controls to limit collection.</p>' if site.get('ga4_measurement_id') else ''
     pages = {
         "about": (
             "About TicketScout",
@@ -69,7 +81,7 @@ def static_pages(out, base, site):
         "privacy": (
             "Privacy | TicketScout",
             "Privacy information for visitors to the static TicketScout website.",
-            f'<h1>Privacy</h1><p>Last updated: {date.today():%B %d, %Y}</p><p>TicketScout is a static information site. It does not provide visitor accounts, ticket checkout, newsletter subscriptions, or a contact form. The site source does not include custom analytics or advertising scripts. The live site includes Cloudflare Web Analytics, which Cloudflare documents as collecting page-performance metrics through browser performance APIs without cookies or personal visitor data. See <a href="https://developers.cloudflare.com/web-analytics/about/">Cloudflare Web Analytics</a> and the <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare Privacy Policy</a> for details.</p><h2>Third-party advertising</h2><p>TicketScout plans to display third-party advertisements after an advertising network approves this site and its advertising code is installed. No advertising network code is currently installed in the site source. Before enabling advertisements, this policy will be updated to identify the network and explain its actual data collection, cookies or other storage, and available privacy choices.</p><h2>Hosting and external links</h2><p>When you request a page, the hosting and network services that deliver and protect this site may process technical request information, such as an IP address, requested URL, browser details and request time.</p><p>Offer links take you to attraction providers’ websites. Those sites have their own privacy practices, which apply when you visit them. TicketScout does not control those sites.</p><p>For a privacy question about TicketScout, contact: {contact}</p>',
+            f'<h1>Privacy</h1><p>Last updated: {date.today():%B %d, %Y}</p><p>TicketScout is a static information site. It does not provide visitor accounts, ticket checkout, newsletter subscriptions, or a contact form. The live site includes Cloudflare Web Analytics, which Cloudflare documents as collecting page-performance metrics through browser performance APIs without cookies or personal visitor data. See <a href="https://developers.cloudflare.com/web-analytics/about/">Cloudflare Web Analytics</a> and the <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare Privacy Policy</a> for details.</p>{analytics_privacy}<h2>Third-party advertising</h2><p>No advertising network code is currently installed in the site source. Before enabling advertisements, this policy will identify the network and its actual data collection and privacy choices.</p><h2>Hosting and external links</h2><p>When you request a page, the hosting and network services that deliver and protect this site may process technical request information, such as an IP address, requested URL, browser details and request time.</p><p>Offer links take you to attraction providers’ websites. Those sites have their own privacy practices, which apply when you visit them. TicketScout does not control those sites.</p><p>For a privacy question about TicketScout, contact: {contact}</p>',
         ),
         "contact": (
             "Contact | TicketScout",
@@ -101,7 +113,7 @@ def main():
     base = site.get("base_url", "https://ticket-scout.pages.dev")
     data_file = ROOT / "data" / "offers.json"
     data = json.loads(data_file.read_text(encoding="utf-8")) if data_file.exists() else {"fetched_at": "", "offers": []}
-    offers = data.get("offers", [])
+    offers = [o for o in data.get("offers", []) if not o.get("valid_until") or o["valid_until"] >= date.today().isoformat()]
     out = ROOT / "site"
     out.mkdir(exist_ok=True)
     # Remove stale generated pages while keeping the source tree untouched.
@@ -153,10 +165,14 @@ def main():
         deal_cards.append(offer_card(offer, f"/{path}"))
         entries.append({"path": path, "title": offer.get("title", "Verified offer")})
     entries.extend(static_pages(out, base, site))
+    from editorial import render_guides
+    guides = render_guides(out, base, layout)
+    entries.extend(guides)
     state_line = f'<p class="meta">Last source check: {esc(data.get("fetched_at") or "No completed fetch yet")}</p>'
-    hero = f'<section class="hero"><p class="eyebrow">Attraction & theme park ticket discounts</p><h1>Find verified ticket offers</h1><p>Official-source discounts for museums, attractions and theme parks. We list a deal only when the source provides evidence of a discount.</p>{state_line}</section>'
+    hero = f'<section class="hero"><p class="eyebrow">TicketScout · Official sources</p><h1>Find verified ticket discounts</h1><p>Compare evidenced offers, then confirm your ticket with the provider.</p><p class="stats">{len(offers)} verified offers · {len(providers)} providers</p><a class="button" href="#offers">Browse offers</a> <a class="button secondary" href="/guides/">Read ticket guides</a>{state_line}</section>'
     empty = '<section class="empty"><h2>No verified discounts at the moment</h2><p>We could not confirm a current discount from the configured official provider. Visit the provider for standard ticket options and availability.</p></section>' if not offers else ""
-    home_body = hero + empty + '<section><h2>Current offers</h2>' + ("".join(deal_cards) if deal_cards else '<p class="muted">No deals meet our verification rules yet.</p>') + '</section><section><h2>Providers</h2>' + "".join(provider_cards) + '</section>'
+    guide_cards = ''.join(f'<article class="card"><h2><a href="/{e["path"]}">{esc(e["title"])}</a></h2><p>{esc(e.get("answer", ""))}</p></article>' for e in guides if e['path'] != 'guides/')
+    home_body = hero + empty + '<section id="offers"><h2>Current offers</h2><div class="cards-grid">' + ("".join(deal_cards) if deal_cards else '<p class="muted">No deals meet our verification rules yet.</p>') + '</div></section><section><h2>Ticket guides</h2>' + guide_cards + '</section><section><h2>Providers</h2><div class="provider-grid">' + "".join(provider_cards) + '</div></section>'
     (out / "index.html").write_text(layout(f"Verified attraction ticket discounts | {date.today():%B %Y} | {brand}", "Find current attraction and theme park ticket discounts verified against official sources.", canonical(base), home_body, item_list(entries, base)), encoding="utf-8")
     provider_index = '<h1>Official ticket providers</h1>' + "".join(provider_cards)
     (out / "providers").mkdir(exist_ok=True)
@@ -181,11 +197,13 @@ def deal_slug(offer):
 def offer_card(offer, url):
     price = f' · {esc(offer["currency"])} {esc(offer["price"])}' if "price" in offer and offer.get("currency") else ""
     discount = f'{esc(offer["discount_percent"])}% off' if offer.get("discount_percent") is not None else esc(offer.get("discount_label", "Official discount"))
-    return f'<article class="card"><p class="discount">{discount}</p><h2><a href="{esc(url)}">{esc(offer.get("title", "Verified discount"))}</a></h2><p>{esc(offer.get("provider", ""))}{price}</p><p class="source">Verified from the <a href="{esc(offer.get("source_url", ""))}">official source</a>.</p></article>'
+    return f'<article class="card"><p class="source">{esc(offer.get("provider", ""))}</p><h2><a href="{esc(url)}">{esc(offer.get("product_name", offer.get("title", "Verified discount")))}</a></h2><p class="discount">{discount}</p><p class="price">{esc(offer.get("currency", ""))} {esc(offer.get("price", ""))}</p><p class="source">Verified from the <a href="{esc(offer.get("source_url", ""))}">official source</a>.</p></article>'
 
 
 CSS = """html{overflow-wrap:anywhere}img{max-width:100%;height:auto}header{flex-wrap:wrap;gap:12px}nav{flex-wrap:wrap}nav a{display:inline-flex;align-items:center;min-height:44px}a:focus-visible{outline:3px solid #b34b10;outline-offset:3px}@media(max-width:480px){.hero{padding:26px}header,footer,main{padding:16px}}*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#152238;font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}header,footer,main{max-width:1080px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;align-items:center}.brand{font-weight:800;font-size:1.3rem;color:#14233c;text-decoration:none}nav{display:flex;gap:20px}a{color:#1459b5}.hero{background:#142b4a;color:white;border-radius:22px;padding:48px;margin:14px 0 32px}.hero a{color:white}.hero h1{max-width:760px;font-size:clamp(2.2rem,6vw,4rem);line-height:1.08;margin:.2em 0}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.78rem;font-weight:700;color:#83c4ff}.hero .eyebrow{color:#9bd4ff}.meta,.muted{color:#66758a}.hero .meta{color:#c5d5e8}.card,.empty{background:white;border:1px solid #e1e7ef;border-radius:16px;padding:22px;margin:14px 0;box-shadow:0 4px 18px #182d4b0a}.card h2{margin:.1em 0}.discount{color:#a13217;font-size:1.2rem;font-weight:800}.price{font-size:1.7rem;font-weight:750}.button{display:inline-block;background:#155bb4;color:white;padding:11px 17px;border-radius:9px;text-decoration:none;font-weight:700}.source{font-size:.9rem;color:#64748b}footer{margin-top:40px;border-top:1px solid #dce3ec;color:#536175;font-size:.9rem}.footer-links{display:flex;gap:18px;flex-wrap:wrap}section{margin:30px 0}nav a{text-decoration:none}h1{line-height:1.15}article a{text-decoration:none}article a:hover{text-decoration:underline}@media(min-width:760px){main>section:not(.hero){display:block}.card{padding:24px}}"""
 
+
+CSS += """.cards-grid,.provider-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.cards-grid .card,.provider-grid .card{margin:0}.card h2{font-size:1.3rem;line-height:1.3}.card .discount{display:inline-block;background:#e5f3ea;color:#17553a;border-radius:6px;padding:4px 9px;font-size:.86rem}.card .price{margin:.3em 0;font-size:1.75rem}.stats{font-weight:700}.secondary{background:transparent;border:1px solid #a9c4e5;margin-left:8px}.guide{max-width:780px;margin:auto}.answer{background:#eaf4ff;border-left:4px solid #1459b5;padding:18px;border-radius:8px;font-size:1.1rem}.guide h1{font-size:clamp(2rem,5vw,3rem)}.guide h2{margin-top:2em}.guide table{border-collapse:collapse;width:100%;font-size:.95rem}.guide td,.guide th{padding:12px;border:1px solid #dce3ec;text-align:left}.table-scroll{overflow-x:auto}figure{margin:24px 0}figcaption{font-size:.9rem;color:#536175}.guide img{display:block;width:100%}@media(max-width:600px){.cards-grid,.provider-grid{grid-template-columns:1fr}.hero{padding:24px}.hero h1{font-size:32px}header,footer,main{padding:16px}.secondary{margin:10px 0 0}.guide td,.guide th{padding:8px}}"""
 
 if __name__ == "__main__":
     main()

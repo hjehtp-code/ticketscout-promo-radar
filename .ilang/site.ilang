@@ -1,7 +1,7 @@
 ILANG
 [TYPE:config][PROJECT:TicketScout][LANG:zh]
 
-::STATE{@SITE, brand:TicketScout, operator:an independent developer, niche:Attraction and theme-park ticket discounts, domain:attractionticketradar.com, base_url:https://attractionticketradar.com, locale:en-US, currency:USD, contact_email:contact@attractionticketradar.com}
+::STATE{@SITE, brand:TicketScout, operator:an independent developer, niche:Attraction and theme-park ticket discounts, domain:attractionticketradar.com, base_url:https://attractionticketradar.com, locale:en-US, currency:USD, contact_email:contact@attractionticketradar.com, ga4_measurement_id:G-ZY15T43G9C}
 
 ::MODULE{PROVIDERS|title:Single-brand official attraction providers}
   Paultons Park | https://paultonspark.co.uk | https://paultonspark.co.uk/tickets/two-for-one/ |
@@ -14,6 +14,21 @@ ILANG
   Hoo Zoo and Dinosaur World | https://www.hoo-zoo.com | https://www.hoo-zoo.com/tickets-passes/admission-prices/ |
 ::MODULE{FIELDS|title:Fields for each verified offer}
   title price currency offer_url valid_until source_url fetched_at provider_id product_name discount_percent
+
+::MODULE{RESEARCH_SOURCES|title:Public benchmark and editorial evidence sources; not offer providers}
+  Undercover Tourist | https://www.undercovertourist.com/theme-parks/
+  My Park Tickets | https://www.myparktickets.com/shop/
+  FunEx | https://www.funex.com/
+  Disneyland official offers | https://disneyland.disney.go.com/offers-discounts/
+  Disneyland official tickets | https://disneyland.disney.go.com/admission/ticket-prices/
+  Costco official theme parks | https://www.costco.com/theme-park-attractions.html
+  LEGOLAND Florida official | https://www.legoland.com/florida/tickets-passes/
+  LEGOLAND Florida ticket details | https://www.legoland.com/florida/tickets-passes/tickets/
+  LEGOLAND Florida pass details | https://www.legoland.com/florida/tickets-passes/annual-passes/
+  LEGOLAND Florida parking | https://www.legoland.com/florida/plan-your-visit/planning-tools/directions-parking/
+  Carowinds official | https://www.carowinds.com/daily-tickets
+  Six Flags official | https://www.sixflags.com/
+  Knott's Berry Farm official | https://www.knotts.com/daily-tickets
 
 ::RULE{Only publish explicitly evidenced current discounts from official public pages or structured data; ordinary starting prices are not discounts}
 ::RULE{No verified discount means no offer record; provider pages must say no verified offers are available}

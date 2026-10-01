@@ -1,0 +1,9 @@
+# LL-01 publication review — 2026-10-01
+
+Target: **legoland ticket**, user-supplied US monthly volume **4万**, unchanged. Scope: Florida, not all LEGOLAND properties. One gap: distinguish exact-ticket inclusions and current/expired terms before purchase.
+
+Official public evidence: configured LEGOLAND Florida overview, ticket details, annual-pass comparison and parking page, accessed through robots-aware research. No competitor prices or invented offers are used. The overview's November 1 and detail page's November 2 promotion deadlines conflict; the article preserves this uncertainty. The BOGO visit window ending August 16, 2026 is explicitly treated as expired. Reseller sample absence is scoped to inspected pages.
+
+Originality review: body contains 1,128 word tokens including headings/captions (regex word-token count). Conservatively count only three independently constructed sections: six-field worksheet and elimination order (221), same-party total comparison with unknown fees and benefits separated (192), final product-level check (104): **517 original-contribution tokens**, over 40% even including the introductory answer. These sections were composed as TicketScout decision methods, not paraphrases of competitor prose. The official factual sections and contradiction finding are excluded from that conservative numerator. This is an editorial contribution assessment, not an automatic guarantee based on lexical uniqueness.
+
+First-screen review: at 390×844, answer ends at 677 pixels, fully visible; document has no horizontal overflow. Desktop reviewed. Three authored diagrams and question/answer sections included. Build and validator confirm approved target, unique gap, answer before sections, no Chinese traces, all image assets and sitemap entry. Publication is recorded only after live verification.
