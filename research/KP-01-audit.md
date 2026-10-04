@@ -1,0 +1,5 @@
+# KP-01 audit — 2026-10-04
+Target original knott's berry farm tickets / 16.5万 unchanged. New gap: renewal buyer, renewal deadline and friend use window/home park; not KB-01 daytime/event/parking coverage.
+Current configured robots-aware official receipt KP-01-source-recheck.json plus actual public View Details panel DOM KP-01-details-browser.txt and screenshot proofs/KP-01-official-details.jpg. Footnote provides 2026 friend use, home-first condition and Scary Farm exclusion.
+Independent decision method: three clocks, separate buyer and benefit categories, hypothetical 2027 itinerary mismatch, home-park sequence gate, go/hold/reject evidence logic. 688 method tokens / 1002 body = 68.7%. Editorial contribution assessment, not lexical novelty guarantee; sourced facts, FAQ and diagram text excluded from numerator.
+No invented date Dec31, pass break-even, current checkout total, redemption procedure, new buyer eligibility or discount percentage. Four original FAQs and three authored diagrams.
