@@ -1,0 +1,4 @@
+# KM-01 audit — 2026-10-05
+Original target knott's berry farm tickets,16.5万 unchanged. Distinct gap: required membership payments and after-minimum renewal, not friend bonus or day/event admission.
+Current sources: KM-01-source-recheck.json and actual public details KM-01-details-browser.txt, screenshot proofs/KM-01-official-details.jpg. Required N=12 and I/M=30/10,40/12,40/28 from same official page; independent formula I+N*M gives150/184/376 before tax, not checkout quotes. No invented cancellation, billing dates, fees or break-even.
+Independent contribution: dual obligation/timing ledgers, shared planning horizon, household allocation, after-term decision checkpoint and input consistency method. 606 method tokens/1047 body=57.9% editorial assessment, not lexical novelty guarantee; facts/calculation table/FAQ/images excluded from numerator. Three original diagrams, four original sourced FAQs.
