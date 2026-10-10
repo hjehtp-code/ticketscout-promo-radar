@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-09T18:35:37+00:00",
+  "fetched_at": "2026-10-10T00:43:33+00:00",
   "offers": [
     {
       "provider_id": "gulliver's",
@@ -10,7 +10,7 @@
       "source_url": "https://www.gulliverslandresort.co.uk/plan-your-visit/opening-times-prices/",
       "price": 26.0,
       "currency": "GBP",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page labels Online Advance prices and states an approximate online discount when booked in advance.",
       "discount_label": "Online advance discount"
     },
@@ -23,7 +23,7 @@
       "source_url": "https://www.gulliverslandresort.co.uk/plan-your-visit/opening-times-prices/",
       "price": 24.0,
       "currency": "GBP",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page labels Online Advance prices and states an approximate online discount when booked in advance.",
       "discount_label": "Online advance discount"
     },
@@ -36,7 +36,7 @@
       "source_url": "https://www.gulliverslandresort.co.uk/plan-your-visit/opening-times-prices/",
       "price": 19.0,
       "currency": "GBP",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page labels Online Advance prices and states an approximate online discount when booked in advance.",
       "discount_label": "Online advance discount"
     },
@@ -49,7 +49,7 @@
       "source_url": "https://www.gulliverslandresort.co.uk/plan-your-visit/opening-times-prices/",
       "price": 24.0,
       "currency": "GBP",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page labels Online Advance prices and states an approximate online discount when booked in advance.",
       "discount_label": "Online advance discount"
     },
@@ -62,7 +62,7 @@
       "source_url": "https://www.taronga.org.au/sydney-zoo/plan/visitor-information/ticket-prices",
       "price": 51.3,
       "currency": "AUD",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page lists online price AUD 51.30 below gate price AUD 57.00.",
       "discount_label": "Discounted online ticket"
     },
@@ -75,7 +75,7 @@
       "source_url": "https://www.taronga.org.au/sydney-zoo/plan/visitor-information/ticket-prices",
       "price": 38.7,
       "currency": "AUD",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page lists online price AUD 38.70 below gate price AUD 43.00.",
       "discount_label": "Discounted online ticket"
     },
@@ -88,7 +88,7 @@
       "source_url": "https://www.taronga.org.au/sydney-zoo/plan/visitor-information/ticket-prices",
       "price": 29.7,
       "currency": "AUD",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page lists online price AUD 29.70 below gate price AUD 33.00.",
       "discount_label": "Discounted online ticket"
     },
@@ -101,7 +101,7 @@
       "source_url": "https://www.taronga.org.au/sydney-zoo/plan/visitor-information/ticket-prices",
       "price": 144.0,
       "currency": "AUD",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page lists online price AUD 144.00 below gate price AUD 162.00.",
       "discount_label": "Discounted online ticket"
     },
@@ -114,7 +114,7 @@
       "source_url": "https://www.taronga.org.au/sydney-zoo/plan/visitor-information/ticket-prices",
       "price": 117.6,
       "currency": "AUD",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page lists online price AUD 117.60 below gate price AUD 132.30.",
       "discount_label": "Discounted online ticket"
     },
@@ -127,7 +127,7 @@
       "source_url": "https://www.taronga.org.au/sydney-zoo/plan/visitor-information/ticket-prices",
       "price": 98.4,
       "currency": "AUD",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page lists online price AUD 98.40 below gate price AUD 110.70.",
       "discount_label": "Discounted online ticket"
     },
@@ -140,7 +140,7 @@
       "source_url": "https://www.hoo-zoo.com/tickets-passes/admission-prices/",
       "price": 17.95,
       "currency": "GBP",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page labels advance booking a reduced price and lists online price GBP 17.95 below gate price GBP 22.95.",
       "discount_label": "Reduced online ticket price"
     },
@@ -153,7 +153,7 @@
       "source_url": "https://www.hoo-zoo.com/tickets-passes/admission-prices/",
       "price": 16.95,
       "currency": "GBP",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page labels advance booking a reduced price and lists online price GBP 16.95 below gate price GBP 21.95.",
       "discount_label": "Reduced online ticket price"
     },
@@ -166,7 +166,7 @@
       "source_url": "https://www.hoo-zoo.com/tickets-passes/admission-prices/",
       "price": 16.45,
       "currency": "GBP",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page labels advance booking a reduced price and lists online price GBP 16.45 below gate price GBP 21.45.",
       "discount_label": "Reduced online ticket price"
     },
@@ -179,7 +179,7 @@
       "source_url": "https://www.hoo-zoo.com/tickets-passes/admission-prices/",
       "price": 16.45,
       "currency": "GBP",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page labels advance booking a reduced price and lists online price GBP 16.45 below gate price GBP 21.45.",
       "discount_label": "Reduced online ticket price"
     },
@@ -192,7 +192,7 @@
       "source_url": "https://www.hoo-zoo.com/tickets-passes/admission-prices/",
       "price": 79.95,
       "currency": "GBP",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page labels advance booking a reduced price and lists online price GBP 79.95 below gate price GBP 99.95.",
       "discount_label": "Reduced online ticket price"
     },
@@ -205,7 +205,7 @@
       "source_url": "https://www.hoo-zoo.com/tickets-passes/admission-prices/",
       "price": 64.95,
       "currency": "GBP",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page labels advance booking a reduced price and lists online price GBP 64.95 below gate price GBP 79.95.",
       "discount_label": "Reduced online ticket price"
     },
@@ -218,7 +218,7 @@
       "source_url": "https://www.hoo-zoo.com/tickets-passes/admission-prices/",
       "price": 13.0,
       "currency": "GBP",
-      "fetched_at": "2026-10-09T18:35:37+00:00",
+      "fetched_at": "2026-10-10T00:43:33+00:00",
       "discount_evidence": "Official page labels advance booking a reduced price and lists online price GBP 13.00 below gate price GBP 19.00.",
       "discount_label": "Reduced online ticket price"
     }
