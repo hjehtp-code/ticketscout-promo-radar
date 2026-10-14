@@ -1,0 +1,7 @@
+# CG-01 originality and evidence audit — October 14, 2026
+Approved target carowinds tickets; original user monthly5万 unchanged. Distinct gap: paid purchase versus attendance ledgers across group/birthday/custom-event routes; not CW-01 admission rights or CF-01 queue upgrades.
+Official source https://www.sixflags.com/carowinds/groups/tickets, fresh configured robots-aware receipt research/CG-01-source-recheck.json. No checkout or exact-date quote. Commercial summary kept short; unknown passholder counting, fees and event cancellation not invented.
+Original analytical sections: linked attendance/purchase ledgers; separate complimentary entitlement; two explicitly hypothetical count scenarios; equivalent-coverage cost worksheet; change-of-plan recount; written-proposal consistency check. Independently constructed workflow, not competitor rewrite.
+Word-count formula: strip HTML tags, regex word tokens. Original 729 / entire body 941 ×100 = 77.5%. Facts, FAQ and diagrams excluded from numerator. This editorial audit assesses substantive sections, not a guarantee of world-first ideas or lexical novelty.
+First-screen answer; three exclusive static SVGs; source/canonical/sitemap validation required. Actual visual check blocked by Windows helper GetCursorPos access denial; never represent source checks as mobile screenshots.
+Rollback: revert today's CG-01 source commit and rebuild/deploy; preserve all unrelated files and DNS.
