@@ -1,0 +1,7 @@
+# SF-01 audit — October24,2026
+Approvedtarget six flags tickets, originalUSmonthly9.1万 unchanged. Previouslyunfinished park/date restrictiongap now supported by configuredofficialTicketTerms. ScopegenericDailyTicket identity/validity, notCarowindsCS-01passhorizon orCW-01mazeproduct coverage.
+Officialsource https://www.sixflags.com/ticket-terms ; documentlastupdatedAugust5,2026, readtoday via robots-aware localfetch andpublicwebreader. SectionsProductDefinitions/ProductTerms/DailyTicket/Bundle supportfacts. No privateAPI/account/bypass. ReviewreceiptSF-01-official-review.json, rawlocalSF-01-source-recheck.json.
+Originalcontribution: four-field evidence match, fourdiagnostic mismatchstates/table, crossparkhypothetical and separatecalendar/order validity check, componentbreakdown and exactrecord reconciliation. No refund/legaldispute outcome, individualticketvalidation orpriceinvented. No copiedcontractpassages orcompetitorprose.
+FormulaHTMLstrip+regexwordtokens: original584/body772×100=75.6%. FactsFAQfigures excludednumerator; substantiveeditorialassessment, not lexicalnovelty. Smallofficialfactualsummary only, no copyingextensiveterms.
+Firstanswer,3bespokeSVGs, scope/date/source. Actualdesktop/mobileUIQA incomplete pendingpriorURLguardrecovery; no UIbypass/stalescreenshot. Build/links/livechecks separatelyrequired.
+RollbackrevertSF-01sourcecommit,rebuild/deploy normally; preserveDNS/privatefiles.
