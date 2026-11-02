@@ -9,6 +9,7 @@ from create_diagrams import SLIDES
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT/'media'/'LL-01'
 NARRATION = '''Before buying a LEGOLAND ticket, match the resort, the included attractions, and your visit date. Florida and California are different destinations. For the Florida ticket reviewed on October first, twenty twenty six, the official page includes SEA LIFE with theme park admission and lists a separate Water Park option. A visible promotion can still be expired. An old buy one get one terms block ends its visit window on August sixteenth, twenty twenty six. It does not prove a current deal. The overview and detailed pages also show different November promotion deadlines, so confirm your exact product with LEGOLAND. Finally, compare the same party and day. Add admission, required fees, parking you need, and chosen extras. An unknown fee is not zero. Read the source-linked TicketScout guide for the worksheet. Ticket terms can change.'''
+FOOTER_TEXT = 'Official source evidence checked October 1, 2026 · Terms may change'
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
@@ -26,7 +27,7 @@ def main():
             d.text((95,y+22),label,font=font(21,True),fill='#12634d')
             d.text((295,y+28),value,font=font(26),fill='#203d43')
         d.text((70,580),note,font=font(24),fill='#203d43')
-        d.text((70,638),'Florida official sources reviewed October 1, 2026 · Terms may change',font=font(17),fill='#47645e')
+        d.text((70,638),FOOTER_TEXT,font=font(17),fill='#47645e')
         im.save(OUT/f'slide-{i+1}.png')
     speech_script=OUT/'narrate.ps1'
     speech_script.write_text("Add-Type -AssemblyName System.Speech\n$ticketNarrator = New-Object System.Speech.Synthesis.SpeechSynthesizer\n$ticketNarrator.SelectVoice('Microsoft Zira Desktop')\n$ticketNarrator.Rate = 0\n$ticketNarrator.SetOutputToWaveFile((Join-Path $PSScriptRoot 'narration.wav'))\n$ticketNarrator.Speak((Get-Content (Join-Path $PSScriptRoot 'narration.txt') -Raw))\n$ticketNarrator.Dispose()\n",encoding='utf-8')
