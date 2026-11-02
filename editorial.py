@@ -19,7 +19,7 @@ def render_guides(out,base,layout):
         dest=out/path;dest.mkdir(parents=True,exist_ok=True)
         schema={'@context':'https://schema.org','@type':'Article','headline':g['title'],'datePublished':g['published_at'],'dateModified':g['checked_at'],'author':{'@type':'Organization','name':'TicketScout'}}
         (dest/'index.html').write_text(layout(g['title'],g['answer'],base.rstrip('/')+'/'+path,body,schema),encoding='utf-8')
-        entries.append({'path':path,'title':g['title'],'answer':g['answer']})
+        entries.append({'path':path,'title':g['title'],'answer':g['answer'],'lastmod':g.get('checked_at') or g['published_at']})
         cards.append('<article class="card"><h2><a href="/'+path+'">'+html.escape(g['title'])+'</a></h2><p>'+html.escape(g['answer'])+'</p></article>')
     dest=out/'guides';dest.mkdir(exist_ok=True)
     (dest/'index.html').write_text(layout('Ticket guides','Official-source ticket guides and practical comparisons.',base.rstrip('/')+'/guides/','<h1>Ticket guides</h1>'+(''.join(cards) or '<p>No guides published yet.</p>')),encoding='utf-8')
